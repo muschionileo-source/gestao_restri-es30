@@ -448,17 +448,32 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
 .modal-close:hover { color: var(--text); }
 
 /* ══ LOGIN OVERLAY ══ */
+
+@media (max-width: 768px) {
+  .login-box {
+    padding: 28px 20px 24px !important;
+    border-radius: 12px !important;
+    width: 100% !important;
+  }
+  .login-title { font-size: 20px !important; }
+  .login-subtitle { font-size: 10px !important; }
+}
+
 #login-overlay {
   position: fixed; inset: 0; z-index: 999;
   background: linear-gradient(135deg, #0f2147 0%, #1a3a6e 60%, #0f2147 100%);
   display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
 }
 #login-overlay.hidden { display: none; }
 .login-box {
   background: #fff; border-radius: 16px;
-  padding: 40px 44px 36px; width: 380px; max-width: 95vw;
+  padding: 40px 44px 36px; width: 380px; max-width: 100%;
   box-shadow: 0 20px 60px rgba(0,0,0,0.35);
   text-align: center;
+  margin: auto;
+  flex-shrink: 0;
 }
 .login-logo { font-size: 36px; margin-bottom: 8px; }
 .login-title {
@@ -692,6 +707,90 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
   #mobile-topbar-role-text { font-size: 10px; color: var(--text-dim); }
 }
 
+
+/* ══ MODAL CRIAR USUÁRIO ══ */
+#user-modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.45);
+  display: none; align-items: center; justify-content: center;
+  padding: 16px;
+}
+#user-modal-overlay.open { display: flex; }
+.user-modal-box {
+  background: #fff; border-radius: 14px;
+  padding: 32px 28px 24px; width: 400px; max-width: 100%;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+.user-modal-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 900; font-size: 18px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.user-modal-box .login-input-group { margin-bottom: 14px; text-align: left; }
+.user-modal-box .login-input-group label {
+  display: block; font-size: 11px; font-weight: 600;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-mid); margin-bottom: 6px;
+}
+.user-modal-box .login-input-group input {
+  width: 100%; padding: 10px 12px;
+  border: 1.5px solid var(--border); border-radius: 7px;
+  font-family: 'Barlow', sans-serif; font-size: 14px;
+  color: var(--text); background: #f9fafc;
+  transition: border-color 0.15s;
+}
+.user-modal-box .login-input-group input:focus { outline: none; border-color: var(--blue); background: #fff; }
+.user-modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+.btn-criar-usuario {
+  flex: 1; padding: 11px;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-criar-usuario:hover { background: #14305a; }
+.btn-cancelar-usuario {
+  padding: 11px 18px;
+  background: none; color: var(--text-dim);
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-cancelar-usuario:hover { border-color: var(--blue); color: var(--blue); }
+.user-modal-error { color: #c0392b; font-size: 12px; margin-top: 8px; min-height: 16px; font-weight: 600; }
+.user-modal-success { color: #27ae60; font-size: 12px; margin-top: 8px; min-height: 16px; font-weight: 600; }
+
+/* Botão criar usuário na sidebar */
+.btn-criar-user-sidebar {
+  display: none;
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px 12px;
+  background: rgba(232,160,32,0.15);
+  border: 1px solid rgba(232,160,32,0.4);
+  border-radius: 7px;
+  color: var(--gold);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  cursor: pointer; text-align: left;
+  transition: all 0.15s;
+}
+.btn-criar-user-sidebar:hover { background: rgba(232,160,32,0.25); }
+
+/* Botão criar usuário na topbar mobile */
+.btn-criar-user-mobile {
+  display: none;
+  background: none; border: none;
+  color: var(--gold); font-size: 18px;
+  cursor: pointer; padding: 0 4px;
+}
+
 </style>
 </head>
 <body>
@@ -704,8 +803,13 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
   </div>
   <div class="mobile-topbar-title">LPS <span>RVD</span></div>
   <div class="mobile-topbar-right">
-    <span class="mobile-topbar-role" id="mobile-session-role">Visitante</span>
-    <button class="mobile-btn-logout" onclick="fazerLogout()">Sair</button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="btn-criar-user-mobile" id="btn-criar-user-mobile" onclick="abrirModalUsuario()" title="Criar usuário">👤</button>
+      <div>
+        <span class="mobile-topbar-role" id="mobile-session-role">Visitante</span><br>
+        <button class="mobile-btn-logout" onclick="fazerLogout()">Sair</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -772,6 +876,9 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
       <span class="session-role" id="session-role">Visitante</span>
       <button class="btn-logout" onclick="fazerLogout()">Sair</button>
     </div>
+    <button class="btn-criar-user-sidebar" id="btn-criar-user-sidebar" onclick="abrirModalUsuario()">
+      👤 Criar Usuário
+    </button>
   </div>
 </aside>
 
@@ -1045,6 +1152,7 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
 ══════════════════════════════════════════════════════════════ */
 import { initializeApp }                            from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword,
+         signInAnonymously, createUserWithEmailAndPassword,
          signOut, onAuthStateChanged }              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, setDoc,
          onSnapshot, serverTimestamp }              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
@@ -1077,6 +1185,11 @@ function setSessionUI(role) {
   // Esconder export-bar para visitantes
   const exportBar = document.querySelector('.export-bar');
   if (exportBar) exportBar.style.display = IS_ADMIN ? '' : 'none';
+  // Mostrar botão criar usuário apenas para admin
+  const btnSidebar = document.getElementById('btn-criar-user-sidebar');
+  if (btnSidebar) btnSidebar.style.display = IS_ADMIN ? 'block' : 'none';
+  const btnMobile = document.getElementById('btn-criar-user-mobile');
+  if (btnMobile) btnMobile.style.display = IS_ADMIN ? 'block' : 'none';
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1096,10 +1209,13 @@ window.fazerLoginAdmin = async function() {
   }
 };
 
-window.entrarComoVisitante = function() {
-  setSessionUI('visitor');
-  document.getElementById('login-overlay').classList.add('hidden');
-  initApp();
+window.entrarComoVisitante = async function() {
+  try {
+    await signInAnonymously(auth);
+    // onAuthStateChanged detecta e inicia como visitante
+  } catch(e) {
+    document.getElementById('login-erro').textContent = 'Erro ao entrar como visitante.';
+  }
 };
 
 window.fazerLogout = async function() {
@@ -1111,7 +1227,8 @@ window.fazerLogout = async function() {
 // Observador de estado de autenticação
 onAuthStateChanged(auth, user => {
   if (user) {
-    setSessionUI('admin');
+    const role = user.isAnonymous ? 'visitor' : 'admin';
+    setSessionUI(role);
     document.getElementById('login-overlay').classList.add('hidden');
     initApp();
   }
@@ -1966,6 +2083,50 @@ window.setSessionUI = function(role) {
   syncMobileSession(role);
 };
 
+
+/* ══════════════════════════════════════════════════════════════
+   CRIAR USUÁRIO — Firebase Auth
+══════════════════════════════════════════════════════════════ */
+function abrirModalUsuario() {
+  document.getElementById('new-user-email').value = '';
+  document.getElementById('new-user-senha').value = '';
+  document.getElementById('new-user-confirma').value = '';
+  document.getElementById('user-modal-error').textContent = '';
+  document.getElementById('user-modal-success').textContent = '';
+  document.getElementById('user-modal-overlay').classList.add('open');
+}
+
+function fecharModalUsuario() {
+  document.getElementById('user-modal-overlay').classList.remove('open');
+}
+
+window.criarNovoUsuario = async function() {
+  const email    = document.getElementById('new-user-email').value.trim();
+  const senha    = document.getElementById('new-user-senha').value;
+  const confirma = document.getElementById('new-user-confirma').value;
+  const errEl    = document.getElementById('user-modal-error');
+  const okEl     = document.getElementById('user-modal-success');
+  errEl.textContent = ''; okEl.textContent = '';
+
+  if (!email || !senha || !confirma) { errEl.textContent = 'Preencha todos os campos.'; return; }
+  if (senha !== confirma)            { errEl.textContent = 'As senhas não coincidem.'; return; }
+  if (senha.length < 6)             { errEl.textContent = 'A senha deve ter pelo menos 6 caracteres.'; return; }
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, senha);
+    okEl.textContent = `Usuário ${email} criado com sucesso!`;
+    document.getElementById('new-user-email').value = '';
+    document.getElementById('new-user-senha').value = '';
+    document.getElementById('new-user-confirma').value = '';
+    setTimeout(() => fecharModalUsuario(), 1800);
+  } catch(e) {
+    if (e.code === 'auth/email-already-in-use') errEl.textContent = 'E-mail já cadastrado.';
+    else if (e.code === 'auth/invalid-email')   errEl.textContent = 'E-mail inválido.';
+    else if (e.code === 'auth/weak-password')   errEl.textContent = 'Senha muito fraca.';
+    else errEl.textContent = 'Erro ao criar usuário: ' + e.message;
+  }
+};
+
 Object.assign(window, { mobileSwitchTab });
 
 Object.assign(window, {
@@ -1978,6 +2139,7 @@ Object.assign(window, {
   dashGoPage, listGoPage,
   populateFormSelects,
   fazerLoginAdmin, entrarComoVisitante, fazerLogout,
+  abrirModalUsuario, fecharModalUsuario, criarNovoUsuario,
 });
 </script>
 
@@ -1993,5 +2155,30 @@ Object.assign(window, {
   </button>
 </nav>
 
+
+<!-- ══ MODAL CRIAR USUÁRIO ══ -->
+<div id="user-modal-overlay">
+  <div class="user-modal-box">
+    <div class="user-modal-title">👤 Criar Novo Usuário</div>
+    <div class="login-input-group">
+      <label>E-mail</label>
+      <input type="email" id="new-user-email" placeholder="usuario@empresa.com" autocomplete="off">
+    </div>
+    <div class="login-input-group">
+      <label>Senha</label>
+      <input type="password" id="new-user-senha" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+    </div>
+    <div class="login-input-group">
+      <label>Confirmar Senha</label>
+      <input type="password" id="new-user-confirma" placeholder="Repita a senha" autocomplete="new-password">
+    </div>
+    <div class="user-modal-error" id="user-modal-error"></div>
+    <div class="user-modal-success" id="user-modal-success"></div>
+    <div class="user-modal-actions">
+      <button class="btn-cancelar-usuario" onclick="fecharModalUsuario()">Cancelar</button>
+      <button class="btn-criar-usuario" onclick="criarNovoUsuario()">✔ Criar Usuário</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
