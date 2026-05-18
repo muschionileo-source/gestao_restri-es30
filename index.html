@@ -449,11 +449,21 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
 
 /* ══ LOGIN OVERLAY ══ */
 
+/* Ocultar mobile-topbar enquanto login estiver visível */
+#login-overlay:not(.hidden) ~ .mobile-topbar { display: none !important; }
+
 @media (max-width: 768px) {
+  #login-overlay {
+    align-items: flex-start !important;
+    padding: 24px 16px 32px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
   .login-box {
     padding: 28px 20px 24px !important;
     border-radius: 12px !important;
     width: 100% !important;
+    margin: auto auto 0 !important;
   }
   .login-title { font-size: 20px !important; }
   .login-subtitle { font-size: 10px !important; }
@@ -508,26 +518,41 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
   transition: border-color 0.15s;
 }
 .login-input-group input:focus { outline: none; border-color: var(--blue); background: #fff; }
+/* 16px evita zoom automático em inputs no iOS Safari */
+#login-overlay .login-input-group input {
+  font-size: 16px;
+  -webkit-appearance: none;
+  touch-action: manipulation;
+}
 .btn-login-admin {
-  width: 100%; padding: 11px;
+  width: 100%; padding: 12px;
   background: var(--blue); color: #fff;
   border: none; border-radius: 8px;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 14px; font-weight: 700; letter-spacing: 1px;
+  font-size: 15px; font-weight: 700; letter-spacing: 1px;
   text-transform: uppercase; cursor: pointer;
   transition: background 0.15s;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  min-height: 48px;
 }
 .btn-login-admin:hover { background: #14305a; }
+.btn-login-admin:active { background: #0d2444; }
+.btn-login-admin:disabled { background: #7a8ba8; cursor: not-allowed; opacity: 0.8; }
 .btn-login-visitor {
-  width: 100%; padding: 10px;
+  width: 100%; padding: 11px;
   background: none; color: var(--text-dim);
   border: 1.5px solid var(--border); border-radius: 8px;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 13px; font-weight: 600; letter-spacing: 1px;
   text-transform: uppercase; cursor: pointer;
   transition: all 0.15s;
+  touch-action: manipulation;
+  -webkit-appearance: none;
+  min-height: 44px;
 }
 .btn-login-visitor:hover { border-color: var(--gold); color: var(--gold); }
+.btn-login-visitor:active { border-color: var(--gold); color: var(--gold); }
 .login-error {
   color: #c0392b; font-size: 12px;
   margin-top: 10px; min-height: 18px;
@@ -648,6 +673,18 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
   text-decoration: underline;
 }
 
+/* ══ TABLET (769px – 1024px) ══ */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar { width: 200px; }
+  .app-body { margin-left: 200px; }
+  .kpi-row { grid-template-columns: repeat(3, 1fr) !important; }
+  .kpi-row-weeks { grid-template-columns: repeat(3, 1fr) !important; }
+  .main { padding: 0 18px 14px !important; gap: 14px !important; }
+  .kpi-section { padding: 16px 18px 10px !important; }
+  .filters { padding: 8px 18px !important; }
+}
+
+/* ══ MOBILE (≤ 768px) ══ */
 @media (max-width: 768px) {
   /* Esconde elementos desktop */
   .sidebar { display: none !important; }
@@ -658,53 +695,113 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
   .mobile-nav { display: flex !important; }
   .mobile-topbar { display: flex !important; }
 
-  /* Ajusta body para mobile */
+  /* Body */
   .app-body {
     margin-left: 0 !important;
     margin-top: 56px !important;
     padding-bottom: 68px !important;
   }
 
-  /* Filtros responsivos */
+  /* ── Filtros: scroll horizontal, sem quebra de linha ── */
   .filters {
-    padding: 8px 12px;
-    gap: 5px;
-    top: 56px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 8px 12px !important;
+    gap: 5px !important;
+    scrollbar-width: none !important;
   }
-  .filters:last-of-type { top: 102px !important; }
+  .filters::-webkit-scrollbar { display: none !important; }
+  .filters:first-of-type { top: 56px !important; }
+  .filters:last-of-type  { top: 100px !important; }
+  .filter-btn { flex-shrink: 0 !important; font-size: 11px !important; padding: 4px 9px !important; }
+  .filter-label { flex-shrink: 0 !important; }
+  .filter-sep   { flex-shrink: 0 !important; }
 
-  /* KPIs empilhados */
-  .kpi-row { grid-template-columns: repeat(2, 1fr) !important; }
-  .kpi-row-weeks { grid-template-columns: repeat(2, 1fr) !important; }
+  /* ── KPIs: 2 colunas ── */
+  .kpi-row       { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  .kpi-row-weeks { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  .kpi-val       { font-size: 22px !important; }
+  .kpi-lbl       { font-size: 9px !important; }
+  .kpi-sub       { font-size: 10px !important; }
+  .kpi-week .kpi-val { font-size: 18px !important; }
 
-  /* Cards em coluna única */
-  .main { grid-template-columns: 1fr !important; padding: 0 12px 12px !important; }
-  .main-full { padding: 0 12px 12px !important; }
-  .kpi-section { padding: 12px 12px 8px !important; }
+  /* ── Layout cards ── */
+  .main      { grid-template-columns: 1fr !important; padding: 0 10px 10px !important; gap: 10px !important; }
+  .main-full { padding: 0 10px 10px !important; }
+  .kpi-section { padding: 10px 10px 8px !important; }
+  .card { padding: 12px 14px !important; }
 
-  /* Login box mobile */
+  /* ── Gráficos menores ── */
+  .chart-wrap      { height: 150px !important; }
+  .chart-wrap-tall { height: 140px !important; }
+
+  /* ── Login box ── */
   .login-box {
     padding: 28px 20px 24px !important;
     width: 95vw !important;
     border-radius: 12px !important;
   }
 
-  /* Formulário de cadastro */
-  .form-grid { grid-template-columns: 1fr !important; }
-  .form-section { padding: 12px 12px !important; }
+  /* ── Tabela ── */
+  .tbl-wrap { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
 
-  /* Tabela com scroll horizontal */
-  .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  /* ── Paginação ── */
+  .pagination { flex-wrap: wrap !important; justify-content: center !important; }
 
-  /* Paginação menor */
-  .pagination { flex-wrap: wrap; justify-content: center; }
+  /* ── Barra de filtros de lista ── */
+  .list-filters {
+    grid-template-columns: 1fr 1fr !important;
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+  .list-content { padding: 8px 10px !important; }
+  .list-filters-bar {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 6px !important;
+    scrollbar-width: none !important;
+  }
+  .list-filters-bar::-webkit-scrollbar { display: none !important; }
+  .list-filters-bar .right { flex-wrap: nowrap !important; flex-shrink: 0 !important; }
+  .list-filters-bar input[type=text] { min-width: 120px !important; }
 
-  /* Lista */
-  .list-filters { padding: 8px 12px !important; }
-  .list-content { padding: 8px 12px !important; }
+  /* ── Formulário de cadastro ── */
+  .cadastro-wrap { padding: 10px !important; }
+  .form-row       { grid-template-columns: 1fr !important; }
+  .form-row.three { grid-template-columns: 1fr 1fr !important; }
+  .form-card      { padding: 12px !important; }
+  .form-grid      { grid-template-columns: 1fr !important; }
+  .form-section   { padding: 10px !important; }
 
-  /* Topbar de sessão mobile sincronizada */
+  /* ── Barra de exportação ── */
+  .export-bar {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding: 8px 10px !important;
+  }
+  .export-bar .btn { font-size: 11px !important; padding: 6px 10px !important; }
+  .btn-group { flex-wrap: wrap !important; }
+
+  /* ── Stat pills ── */
+  .stat-pills { gap: 6px !important; }
+  .stat-pill .pill-val { font-size: 20px !important; }
+
+  /* ── Topbar mobile ── */
   #mobile-topbar-role-text { font-size: 10px; color: var(--text-dim); }
+}
+
+/* ══ MOBILE PEQUENO (≤ 400px) ══ */
+@media (max-width: 400px) {
+  .kpi-row       { grid-template-columns: 1fr 1fr !important; gap: 6px !important; }
+  .kpi-row-weeks { grid-template-columns: 1fr 1fr !important; gap: 6px !important; }
+  .kpi-val       { font-size: 18px !important; }
+  .chart-wrap      { height: 130px !important; }
+  .chart-wrap-tall { height: 120px !important; }
+  .main      { padding: 0 8px 8px !important; gap: 8px !important; }
+  .main-full { padding: 0 8px 8px !important; }
+  .kpi-section { padding: 8px 8px 6px !important; }
 }
 
 
@@ -822,20 +919,20 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
 
     <!-- Acesso Admin -->
     <div class="login-input-group">
-      <label>E-mail Admin</label>
+      <label for="login-email">E-mail Admin</label>
       <input type="email" id="login-email" placeholder="admin@empresa.com" autocomplete="username">
     </div>
     <div class="login-input-group">
-      <label>Senha</label>
+      <label for="login-senha">Senha</label>
       <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password">
     </div>
-    <button class="btn-login-admin" onclick="fazerLoginAdmin()">🔑 Entrar como Admin</button>
+    <button class="btn-login-admin" id="btn-entrar">🔑 Entrar como Admin</button>
     <div class="login-error" id="login-erro"></div>
 
     <div class="login-divider">ou</div>
 
     <!-- Acesso Visitante -->
-    <button class="btn-login-visitor" onclick="entrarComoVisitante()">👁 Entrar como Visitante (somente leitura)</button>
+    <button class="btn-login-visitor" id="btn-visitante">👁 Entrar como Visitante (somente leitura)</button>
   </div>
 </div>
 
@@ -844,7 +941,7 @@ tbody td:first-child { font-family: 'Barlow Condensed', sans-serif; font-weight:
   <div class="sidebar-brand">
     <div class="sidebar-brand-icon" style="background:none;padding:0;"><img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADhAOEDASIAAhEBAxEB/8QAGwABAQADAQEBAAAAAAAAAAAAAAEGBwgFBAP/xABEEAABAwMCAwYCBQkECwAAAAABAAIDBAURBhIHIVEIEzEycZEiQRQjYYGCFRYzQlJicpKhGJOx0xc0VFVWg4WUoqOy/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAIDBAUBBv/EAC4RAQACAQIFAwIEBwAAAAAAAAABAgMEERITMUFRBSFhIrEGFJHwI1JxgaHR4f/aAAwDAQACEQMRAD8A1Y5ztx+I+PVTc7qfdHeY+qi+ucFdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup903O6n3URBdzup90URBXeY+qirvMfVRAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREFd5j6qKu8x9VEBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQV3mPqoq7zH1UQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREBERBXeY+qirvMfVRAREQEREBERAREQEREBFtjh7wgF2s1NftVXSe2UVZGJaOkpYg6pnjPhKS74WMPyyCXDny+eV/wChrh5/vTV/99S/5SyX1uGluGZXV0+S0bxDnxbS0pwjnuugKq+VtTVU94qaWSrstuYwE1McbdxLwRkd5ghgGPDdzBwtg2vhDoC1Ru1EH3y5soJGFtFcZIXQVD3ZDQ4MY0loOHEZwQMHIJC9OW5V0l1F0fUONWJBIJOhHhy6fLHhhfLfiD8WU0FqYsMb2naZ+I3+8u76T6DbVxa+Sdoj2j+v/HLDSHNDmkEEZBHzVWfcerDDZNfyT0dG+ko7tTRXGKLYQyN0gzIxp8CA/JwPDcBywFgK+ww5a5sdclekxu+eyY5x3mlusCIisREREBERAREQEREBERBXeY+qirvMfVRAREQEREBERAREQF9dloHXa9UFpa4tdXVUVK0jxBkeGD/6XyLOOAtE2u4vaebKzdFTzvq5Djk0QxvkBP4mt+8hRyW4KTbw9rHFaIdIX9zXXiqbGGtjikMUbW+DWN+FoH2YAXwqvcXvL3HJcclRfKu29G2VFG+hq7Vce8bS1Qae8jGXRPach2PmOvosc1lcNGaCfE/UN6fcqp8YmhtdHARNK0+UvJOI2n97BODjJGF7Vtg+lXCnpicCWVrCegJwuYuLFzlvvErUlwjzM6a4yxQbeZcxh7uMD8LGqunoej9Rzxkz13mv72lO3qeo0mKaYrbbst4/6nrtSQaOluLI46iW1PuXdR+SJlTM7u2A/PbHFGM4GfHAytWrNuOLo4+JNda6dzTTWiCmtsAHgGwwMaR/NvWEr6vT1iuONun+/dw8szN53ERFagIiICIiAiIgIiICIiCu8x9V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" alt="INPASA" style="height:40px;width:40px;object-fit:contain;border-radius:6px;"></div>
     <div class="sidebar-brand-text">
-      LPS RVO
+      LPS RVD
       <small>INPASA · Rio Verde</small>
     </div>
   </div>
@@ -1154,7 +1251,7 @@ import { initializeApp }                            from 'https://www.gstatic.co
 import { getAuth, signInWithEmailAndPassword,
          signInAnonymously, createUserWithEmailAndPassword,
          signOut, onAuthStateChanged }              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, setDoc,
+import { getFirestore, doc, setDoc, getDoc,
          onSnapshot, serverTimestamp }              from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -1190,53 +1287,89 @@ function setSessionUI(role) {
   if (btnSidebar) btnSidebar.style.display = IS_ADMIN ? 'block' : 'none';
   const btnMobile = document.getElementById('btn-criar-user-mobile');
   if (btnMobile) btnMobile.style.display = IS_ADMIN ? 'block' : 'none';
+  // Sincronizar elementos mobile (chamada direta evita o hook quebrado)
+  syncMobileSession(role);
 }
 
 /* ══════════════════════════════════════════════════════════════
    LOGIN / LOGOUT
 ══════════════════════════════════════════════════════════════ */
 window.fazerLoginAdmin = async function() {
-  const email = document.getElementById('login-email').value.trim();
+  const email  = document.getElementById('login-email').value.trim();
   const senha  = document.getElementById('login-senha').value;
   const erroEl = document.getElementById('login-erro');
+  const btnEl  = document.getElementById('btn-entrar');
   erroEl.textContent = '';
   if (!email || !senha) { erroEl.textContent = 'Preencha e-mail e senha.'; return; }
+  if (btnEl.disabled) return; // evita duplo clique
+  btnEl.disabled = true;
+  btnEl.textContent = '⏳ Entrando...';
+  // Timeout de segurança: reseta o botão se Firebase não responder em 15s
+  const tid = setTimeout(() => {
+    btnEl.disabled = false;
+    btnEl.textContent = '🔑 Entrar como Admin';
+    erroEl.textContent = 'Tempo esgotado. Verifique sua conexão e tente novamente.';
+  }, 15000);
   try {
     await signInWithEmailAndPassword(auth, email, senha);
+    clearTimeout(tid);
     // onAuthStateChanged cuida do resto
   } catch(e) {
-    erroEl.textContent = 'E-mail ou senha incorretos.';
+    clearTimeout(tid);
+    const msgs = {
+      'auth/invalid-credential':     'E-mail ou senha incorretos.',
+      'auth/user-not-found':         'E-mail não cadastrado.',
+      'auth/wrong-password':         'Senha incorreta.',
+      'auth/too-many-requests':      'Muitas tentativas. Aguarde antes de tentar novamente.',
+      'auth/network-request-failed': 'Sem conexão com a internet.',
+      'auth/invalid-email':          'E-mail inválido.',
+    };
+    erroEl.textContent = msgs[e.code] || `Erro ao entrar (${e.code || e.message}). Tente novamente.`;
+    btnEl.disabled = false;
+    btnEl.textContent = '🔑 Entrar como Admin';
   }
 };
 
-window.entrarComoVisitante = async function() {
-  try {
-    await signInAnonymously(auth);
-    // onAuthStateChanged detecta e inicia como visitante
-  } catch(e) {
-    document.getElementById('login-erro').textContent = 'Erro ao entrar como visitante.';
-  }
+// Visitor entra DIRETAMENTE — sem aguardar resposta do Firebase
+// initApp() inicia imediatamente; signInAnonymously tenta em background para que o
+// SDK Firestore possa reautenticar o stream existente automaticamente quando completar.
+window.entrarComoVisitante = function() {
+  if (document.getElementById('btn-visitante').disabled) return; // evita duplo clique
+  setSessionUI('visitor');
+  document.getElementById('login-overlay').classList.add('hidden');
+  initApp(); // carrega dados imediatamente
+  signInAnonymously(auth).catch(() => {}); // auth anônima em background, sem bloquear
 };
 
 window.fazerLogout = async function() {
-  if (IS_ADMIN) await signOut(auth);
-  // Volta para a tela de login
+  try { if (IS_ADMIN) await signOut(auth); } catch(_) {}
   location.reload();
 };
 
-// Observador de estado de autenticação
+// Observador de estado de autenticação — protegido com try/catch
 onAuthStateChanged(auth, user => {
-  if (user) {
-    const role = user.isAnonymous ? 'visitor' : 'admin';
-    setSessionUI(role);
-    document.getElementById('login-overlay').classList.add('hidden');
-    initApp();
+  try {
+    if (user) {
+      const role = user.isAnonymous ? 'visitor' : 'admin';
+      setSessionUI(role);
+      document.getElementById('login-overlay').classList.add('hidden');
+      initApp();
+    }
+  } catch(err) {
+    console.error('[Auth] Erro no callback:', err);
+    // Garante que o app inicia mesmo se setSessionUI ou outro lançar exceção
+    try {
+      document.getElementById('login-overlay').classList.add('hidden');
+      if (!_appInitialized) initApp();
+    } catch(_) {}
   }
 });
 
 /* ══════════════════════════════════════════════════════════════
    ENTER no campo de senha dispara login
 ══════════════════════════════════════════════════════════════ */
+document.getElementById('btn-entrar').addEventListener('click', () => window.fazerLoginAdmin());
+document.getElementById('btn-visitante').addEventListener('click', () => window.entrarComoVisitante());
 document.getElementById('login-senha').addEventListener('keydown', e => {
   if (e.key === 'Enter') window.fazerLoginAdmin();
 });
@@ -1274,7 +1407,10 @@ async function saveData(rows) {
 /* ══════════════════════════════════════════════════════════════
    INICIALIZAÇÃO — chamada após login (admin ou visitante)
 ══════════════════════════════════════════════════════════════ */
+let _appInitialized = false;
 function initApp() {
+  if (_appInitialized) return;
+  _appInitialized = true;
   fbStatus(false, 'Carregando dados...');
 
   // Listener em tempo real: qualquer mudança no Firestore atualiza a UI
@@ -1286,13 +1422,14 @@ function initApp() {
       nextId = mx + 1;
       fbStatus(true, `✔ Sincronizado · ${DATA.length} restrições · ${new Date().toLocaleTimeString('pt-BR')}`);
     } else {
-      // Documento ainda não existe — admin pode criar via upload
-      DATA = [];
-      nextId = 1;
+      // Documento ainda não existe — carrega SEED como dados de demonstração
+      DATA = SEED;
+      const mxSeed = Math.max(...SEED.map(r => parseInt(r.ID) || 0), 0);
+      nextId = mxSeed + 1;
       if (IS_ADMIN) {
-        fbStatus(false, 'Banco vazio. Faça upload da planilha para inicializar.');
+        fbStatus(false, `⚠ Banco vazio. Exibindo ${SEED.length} registros de demonstração. Faça upload da planilha para inicializar.`);
       } else {
-        fbStatus(false, 'Aguardando dados do administrador.');
+        fbStatus(false, `Dados de demonstração (${SEED.length} registros). Aguardando sincronização do administrador.`);
       }
     }
     populateFormSelects();
@@ -1903,26 +2040,18 @@ function updateCorte(){
   const mi = String(now.getMinutes()).padStart(2,'0');
   const val = `${d}/${m}/${y} · ${h}:${mi}`;
   document.getElementById('corte-val').textContent = val;
-  // Persiste o corte junto com os dados no Firestore (via campo separado)
   if (IS_ADMIN) {
-    import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({setDoc, doc, serverTimestamp}) => {
-      setDoc(doc(db, 'lps_rvd', 'meta'), { corte: val, updatedAt: serverTimestamp() }, { merge: true });
-    });
+    setDoc(doc(db, 'lps_rvd', 'meta'), { corte: val, updatedAt: serverTimestamp() }, { merge: true })
+      .catch(e => console.warn('Erro ao salvar corte:', e.message));
   }
 }
 
 function loadCorte(){
-  // Tenta ler do Firestore; fallback para '—'
-  import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({getDoc, doc}) => {
-    getDoc(doc(db, 'lps_rvd', 'meta')).then(snap => {
-      if (snap.exists() && snap.data().corte) {
-        document.getElementById('corte-val').textContent = snap.data().corte;
-      } else {
-        document.getElementById('corte-val').textContent = '—';
-      }
-    }).catch(() => {
-      document.getElementById('corte-val').textContent = '—';
-    });
+  getDoc(doc(db, 'lps_rvd', 'meta')).then(snap => {
+    document.getElementById('corte-val').textContent =
+      (snap.exists() && snap.data().corte) ? snap.data().corte : '—';
+  }).catch(() => {
+    document.getElementById('corte-val').textContent = '—';
   });
 }
 
@@ -2063,25 +2192,13 @@ function mobileSwitchTab(tab, btn) {
   if (btn) btn.classList.add('active');
 }
 
-// Patch em setSessionUI para sincronizar mobile
-const _origSetSessionUI = setSessionUI;
-// Sobrescreve após carregamento para sincronizar mobile elements
 function syncMobileSession(role) {
   const isAdmin = (role === 'admin');
-  // Role na topbar mobile
   const mobileRole = document.getElementById('mobile-session-role');
   if (mobileRole) mobileRole.textContent = isAdmin ? 'Administrador' : 'Visitante';
-  // Mostrar/esconder aba Cadastro no mobile nav
   const mobileCadastro = document.getElementById('mobile-nav-cadastro');
   if (mobileCadastro) mobileCadastro.style.display = isAdmin ? '' : 'none';
 }
-
-// Hook: intercepta setSessionUI para rodar syncMobileSession também
-const __origSetSessionUI = window.setSessionUI || function(){};
-window.setSessionUI = function(role) {
-  __origSetSessionUI(role);
-  syncMobileSession(role);
-};
 
 
 /* ══════════════════════════════════════════════════════════════
@@ -2129,6 +2246,9 @@ window.criarNovoUsuario = async function() {
 
 Object.assign(window, { mobileSwitchTab });
 
+// fazerLoginAdmin, entrarComoVisitante, fazerLogout, criarNovoUsuario
+// already on window via direct assignment above — do NOT include them
+// here as shorthand or this will throw ReferenceError
 Object.assign(window, {
   switchTab, clearForm, saveRestriction,
   editRestriction, deleteRestriction, markDone,
@@ -2138,8 +2258,7 @@ Object.assign(window, {
   renderList, clearListFilters,
   dashGoPage, listGoPage,
   populateFormSelects,
-  fazerLoginAdmin, entrarComoVisitante, fazerLogout,
-  abrirModalUsuario, fecharModalUsuario, criarNovoUsuario,
+  abrirModalUsuario, fecharModalUsuario,
 });
 </script>
 
@@ -2182,3 +2301,4 @@ Object.assign(window, {
 </div>
 </body>
 </html>
+Corrige login mobile e responsividade
